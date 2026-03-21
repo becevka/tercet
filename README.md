@@ -145,21 +145,39 @@ local tacit knowledge determines outcomes. Tercet is designed to surface
 mētis — the knowledge that resists documentation but shapes what
 actually happens. (James C. Scott, *Seeing Like a State*.)
 
+## Installation
+
+```bash
+# From a self-hosted marketplace
+/plugin marketplace add becevka/tercet
+/plugin install tercet
+
+# Or clone directly
+git clone https://github.com/becevka/tercet.git
+```
+
+Once installed, invoke with `/tercet:tercet` or let Claude trigger it
+automatically when you ask for help thinking through something complex.
+
 ## Project Structure
 
 ```
 tercet/
-├── SKILL.md              # Orchestration instructions for Claude
-├── README.md             # This file
+├── .claude-plugin/
+│   └── plugin.json          # Plugin manifest
 ├── agents/
-│   ├── constructor.py    # Resourceful, tool-using, trusts evidence
-│   └── examiner.py       # Skeptical, tool-less, questions evidence
-├── templates/
-│   ├── intake.md         # Structured intake questionnaire
-│   └── knowledge_gap.md  # Output template
-└── examples/
-    ├── failure_report.md # Software automation example
-    └── process_redesign.md # Organizational process example
+│   ├── constructor.md       # Resourceful, tool-using, trusts evidence
+│   └── examiner.md          # Skeptical, tool-less, questions evidence
+├── skills/
+│   └── tercet/
+│       ├── SKILL.md         # Orchestration instructions (the Driver)
+│       └── templates/
+│           ├── intake.md    # Structured intake questionnaire
+│           └── knowledge_gap.md  # Output template
+├── examples/
+│   ├── failure_report.md    # Software automation example
+│   └── process_redesign.md  # Organizational process example
+└── README.md                # This file
 ```
 
 ## Background

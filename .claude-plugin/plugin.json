@@ -1,0 +1,13 @@
+{
+  "name": "tercet",
+  "version": "1.0.0",
+  "description": "Planning through dialectic. Takes an incomplete brief, runs a Constructor/Examiner loop that enriches it with evidence and surfaces the questions only a human can answer.",
+  "author": {
+    "name": "Wolfgang Basyuk"
+  },
+  "repository": "https://github.com/becevka/tercet",
+  "license": "MIT",
+  "keywords": ["planning", "dialectic", "decision-making", "knowledge-gaps", "strategy"],
+  "agents": "./agents/",
+  "skills": "./skills/"
+}
