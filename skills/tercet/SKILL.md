@@ -80,8 +80,9 @@ When creating `TERCET.md` from user input, use this structure:
 ## The Core Asymmetry
 
 **The Constructor** is RESOURCEFUL and OPTIMISTIC. It reads `TERCET.md`,
-searches every available tool for evidence, and writes an enriched version
-back. It trusts what it finds.
+reasons from its own knowledge, and writes an enriched version back. It
+searches only for specific verifiable claims, not background research.
+It trusts its reasoning and lets the Examiner challenge it.
 
 **The Examiner** is SKEPTICAL and has NO TOOLS except reading `TERCET.md`.
 It reads the Constructor's enriched brief, writes challenges and contested
@@ -154,12 +155,16 @@ loop continues from where it left off.
 
 ### Constructor
 
-Spawn the **constructor** agent with mode `auto` so it can freely use
-web search, web fetch, MCP tools, file reads, and file writes without
-requiring user confirmation for each action.
+Spawn the **constructor** agent with mode `auto` so it can use file
+reads, file writes, and project tools without requiring user
+confirmation. The Constructor should reason from its own knowledge
+first and only search when it has a specific factual question that
+would change the approach if wrong.
 
 > Read TERCET.md in the project root. This is a Tercet planning brief.
-> Your job is to enrich it. Search every available tool for evidence.
+> Your job is to enrich it. Work primarily from your own knowledge.
+> Only search for specific, verifiable claims - not background research.
+> Aim for 0-3 targeted searches per pass.
 > Write the updated brief back to TERCET.md. Update the cycle count,
 > set "Last updated by: Constructor", and append your confidence
 > declaration. If responding to Examiner challenges, address each one
