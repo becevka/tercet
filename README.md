@@ -194,4 +194,4 @@ principle as a tool.
 
 ## License
 
-MIT
+[MIT](LICENSE)
