@@ -90,49 +90,47 @@ are never the same.
 
 ## Your Role as Driver
 
-You (Claude) hold the loop. You are not a passive relay - you make
-judgment calls.
+You (Claude) are a lightweight coordinator. You spawn agents, read the
+file after each pass, and decide when the loop is done. You do NOT
+evaluate the quality of challenges or defenses - that's the agents' job.
 
 ### Running the Loop
 
-1. **Spawn the Constructor agent.** Tell it to read `TERCET.md`, enrich
-   the brief using all available tools, and write the updated brief back
-   to `TERCET.md`.
+1. **Spawn the Constructor agent** (mode: auto) to read `TERCET.md`,
+   enrich the brief, and write it back.
 
-2. **Read `TERCET.md` after the Constructor finishes.** Check: did the
-   brief actually get richer, or is the Constructor spinning? Check the
-   confidence declaration.
+2. **Spawn the Examiner agent** (mode: auto) to read `TERCET.md`,
+   write challenges, and declare its status.
 
-3. **Spawn the Examiner agent.** Tell it to read `TERCET.md` and write
-   its challenges directly into the Examiner Challenges section. The
-   Examiner should also move any assumptions it contests to CONTESTED
-   and add items to Open Questions.
+3. **Spawn the Constructor again** to read the Examiner's challenges
+   and respond - defending, partially defending, or conceding each one.
+   The Constructor's confidence declaration after this pass determines
+   what happens next.
 
-4. **Read `TERCET.md` after the Examiner finishes.** Check: are the
-   challenges substantive or generic? If generic, push for specificity.
+4. **Check the Constructor's confidence:**
+   - CONFIDENT: the loop can end.
+   - SEARCHING: the Constructor needs another pass. Let it search.
+   - STUCK: collect the stuck items as unresolvable questions.
 
-5. **If CRITICAL challenges exist:** Spawn the Constructor again to
-   address them. It reads the updated `TERCET.md` (which now contains
-   the Examiner's challenges), searches for evidence, and updates the
-   file again.
+5. **If the Constructor is CONFIDENT**, spawn the Examiner one more
+   time to validate. If the Examiner declares SATISFIED, the loop ends.
+   If CHALLENGING, send the Constructor back in. If ESCALATE, end the
+   loop and present the escalated questions to the user.
 
-6. **Repeat until termination.**
+6. **Repeat until termination.** Cap at ~10 exchanges as a safety valve.
+
+The Driver does not judge whether challenges are "substantive" or
+"generic." The Constructor decides whether it can defend. The Examiner
+decides whether defenses hold. The Driver just keeps the loop moving.
 
 ### Termination Conditions
 
 The loop ends when ANY of these are true:
 
-1. **Constructor confident + Examiner satisfied.** The brief is robust
-   enough that the Examiner can't find substantive challenges.
-
-2. **Unresolvable questions accumulated.** The Constructor has hit enough
-   walls that continuing without the human is unproductive. This is the
-   most common and most valuable termination.
-
-3. **Diminishing returns.** The brief isn't getting meaningfully richer.
-   You (the Driver) make this call.
-
-4. **Safety valve.** Cap at ~10 Constructor/Examiner exchanges.
+1. **Constructor CONFIDENT + Examiner SATISFIED.**
+2. **Examiner ESCALATE** - unresolvable questions need the human.
+3. **Constructor STUCK** on enough items that continuing is unproductive.
+4. **Safety valve** - ~10 exchanges reached.
 
 ### Returning to the User
 
@@ -156,7 +154,9 @@ loop continues from where it left off.
 
 ### Constructor
 
-Spawn the **constructor** agent with this instruction:
+Spawn the **constructor** agent with mode `auto` so it can freely use
+web search, web fetch, MCP tools, file reads, and file writes without
+requiring user confirmation for each action.
 
 > Read TERCET.md in the project root. This is a Tercet planning brief.
 > Your job is to enrich it. Search every available tool for evidence.
@@ -166,11 +166,9 @@ Spawn the **constructor** agent with this instruction:
 > in the Examiner Challenges section - either defend with evidence or
 > move the question to Unresolvable Questions.
 
-Give it full tool access.
-
 ### Examiner
 
-Spawn the **examiner** agent with this instruction:
+Spawn the **examiner** agent with mode `auto`.
 
 > Read TERCET.md in the project root. This is a Tercet planning brief
 > enriched by the Constructor. Your job is to challenge it. Write your

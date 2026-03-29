@@ -1,0 +1,1 @@
+- allow websearch and all mcp tool
